@@ -58,11 +58,23 @@ else
     USE_NPM=false
 fi
 
-if ! command_exists docker; then
-    print_warning "Docker is not installed. Skipping Docker image builds."
-    SKIP_DOCKER=true
-else
+if command_exists docker; then
+    CONTAINER_CMD="docker"
+    COMPOSE_CMD="docker-compose"
     SKIP_DOCKER=false
+elif command_exists podman; then
+    CONTAINER_CMD="podman"
+    if command_exists podman-compose; then
+        COMPOSE_CMD="podman-compose"
+    else
+        COMPOSE_CMD=""
+        print_warning "podman-compose not found. Will skip compose builds."
+    fi
+    SKIP_DOCKER=false
+    print_status "Using Podman instead of Docker for container builds."
+else
+    print_warning "Neither Docker nor Podman is installed. Skipping container image builds."
+    SKIP_DOCKER=true
 fi
 
 print_success "Prerequisites check completed."
@@ -121,20 +133,64 @@ cd ..
 if [ "$SKIP_DOCKER" = false ]; then
     print_status "Building Docker images..."
     
-    # Check if docker-compose.yml exists
-    if [ ! -f "docker-compose.yml" ]; then
-        print_warning "docker-compose.yml not found. Skipping Docker builds."
+    # Get version tag (use git commit hash or timestamp)
+    if command_exists git && git rev-parse --git-dir > /dev/null 2>&1; then
+        VERSION_TAG=$(git rev-parse --short HEAD)
+        print_status "Using git commit hash as version tag: $VERSION_TAG"
     else
-        print_status "Building Docker images with docker-compose..."
-        if docker-compose build; then
-            print_success "Docker images built successfully!"
+        VERSION_TAG=$(date +%Y%m%d-%H%M%S)
+        print_status "Using timestamp as version tag: $VERSION_TAG"
+    fi
+    
+    # Build individual container images
+    print_status "Building backend container image..."
+    if $CONTAINER_CMD build -t coaching-app-backend:latest -t coaching-app-backend:$VERSION_TAG ./backend; then
+        print_success "Backend container image built successfully!"
+        print_status "Tagged as: coaching-app-backend:latest and coaching-app-backend:$VERSION_TAG"
+    else
+        print_error "Backend container image build failed!"
+        exit 1
+    fi
+    
+    print_status "Building frontend container image..."
+    if $CONTAINER_CMD build -t coaching-app-frontend:latest -t coaching-app-frontend:$VERSION_TAG ./frontend; then
+        print_success "Frontend container image built successfully!"
+        print_status "Tagged as: coaching-app-frontend:latest and coaching-app-frontend:$VERSION_TAG"
+    else
+        print_error "Frontend container image build failed!"
+        exit 1
+    fi
+    
+    # Build with compose if available
+    if [ -f "docker-compose.yml" ] && [ -n "$COMPOSE_CMD" ]; then
+        print_status "Building container images with $COMPOSE_CMD..."
+        if $COMPOSE_CMD build; then
+            print_success "Compose images built successfully!"
         else
-            print_error "Docker image build failed!"
+            print_error "Compose build failed!"
             exit 1
         fi
+    else
+        if [ -f "docker-compose.yml" ]; then
+            print_warning "docker-compose.yml found but compose command not available. Skipping compose build."
+        else
+            print_warning "docker-compose.yml not found. Skipping compose build."
+        fi
     fi
+    
+    # Clean up dangling images
+    print_status "Cleaning up dangling container images..."
+    if $CONTAINER_CMD image prune -f > /dev/null 2>&1; then
+        print_success "Dangling images cleaned up!"
+    else
+        print_warning "Failed to clean up dangling images."
+    fi
+    
+    # Show container images
+    print_status "Container images created:"
+    $CONTAINER_CMD images | grep -E "(coaching-app-|REPOSITORY)" || true
 else
-    print_warning "Skipping Docker image builds (Docker not available)."
+    print_warning "Skipping container image builds (neither Docker nor Podman available)."
 fi
 
 # Summary
@@ -146,14 +202,28 @@ echo ""
 print_status "Build Summary:"
 echo "  ✅ Backend: Built successfully (backend/bin/coaching-app-backend)"
 echo "  ✅ Frontend: Built successfully (frontend/build/)"
-if [ "$SKIP_DOCKER" = false ] && [ -f "docker-compose.yml" ]; then
-    echo "  ✅ Docker Images: Built successfully"
+if [ "$SKIP_DOCKER" = false ]; then
+    echo "  ✅ Container Images: Built successfully"
+    echo "    - coaching-app-backend:latest, coaching-app-backend:$VERSION_TAG"
+    echo "    - coaching-app-frontend:latest, coaching-app-frontend:$VERSION_TAG"
+    if [ -f "docker-compose.yml" ] && [ -n "$COMPOSE_CMD" ]; then
+        echo "    - compose images"
+    fi
 else
-    echo "  ⚠️  Docker Images: Skipped"
+    echo "  ⚠️  Container Images: Skipped"
 fi
 echo ""
 print_status "Next steps:"
 echo "  • Run the backend: cd backend && ./bin/coaching-app-backend"
 echo "  • Serve the frontend: cd frontend && serve -s build"
-echo "  • Or use Docker: docker-compose up"
+if [ "$SKIP_DOCKER" = false ]; then
+    echo "  • Or use containers individually:"
+    echo "    - Backend: $CONTAINER_CMD run -p 8080:8080 coaching-app-backend:latest"
+    echo "    - Frontend: $CONTAINER_CMD run -p 3000:80 coaching-app-frontend:latest"
+    if [ -n "$COMPOSE_CMD" ]; then
+        echo "  • Or use Compose: $COMPOSE_CMD up"
+    fi
+    echo "  • View container images: $CONTAINER_CMD images | grep coaching-app"
+    echo "  • Clean up old images: $CONTAINER_CMD image prune -f"
+fi
 echo ""
