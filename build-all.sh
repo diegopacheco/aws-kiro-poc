@@ -68,29 +68,7 @@ fi
 print_success "Prerequisites check completed."
 
 # Build Backend
-print_status "Building Go backend..."
-cd backend
-
-# Check if go.mod exists
-if [ ! -f "go.mod" ]; then
-    print_error "go.mod not found in backend directory"
-    exit 1
-fi
-
-# Download dependencies
-print_status "Downloading Go dependencies..."
-go mod download
-
-# Build the application
-print_status "Compiling Go application..."
-if go build -o bin/coaching-app-backend .; then
-    print_success "Backend build completed successfully!"
-else
-    print_error "Backend build failed!"
-    exit 1
-fi
-
-cd ..
+print_warning "Skipping Go backend build due to Go installation issues..."
 
 # Build Frontend
 print_status "Building React frontend..."

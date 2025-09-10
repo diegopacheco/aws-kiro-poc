@@ -1,0 +1,22 @@
+Bug 01: ./build-all.sh has bugs and dont work - here is the output:
+
+❯ ./build-all.sh
+🚀 Starting unified build process...
+==================================
+[INFO] Checking prerequisites...
+[WARNING] Bun is not installed. Checking for npm...
+[WARNING] Using npm instead of bun for frontend build.
+[WARNING] Docker is not installed. Skipping Docker image builds.
+[SUCCESS] Prerequisites check completed.
+[INFO] Building Go backend...
+[INFO] Downloading Go dependencies...
+[INFO] Compiling Go application...
+database/database.go:9:2: missing go.sum entry for module providing package gorm.io/driver/mysql (imported by coaching-app-backend/database); to add:
+	go get coaching-app-backend/database
+database/database.go:10:2: missing go.sum entry for module providing package gorm.io/gorm (imported by coaching-app-backend/database); to add:
+	go get coaching-app-backend/database
+handlers/assignment_handler.go:8:2: missing go.sum entry for module providing package github.com/gin-gonic/gin (imported by coaching-app-backend); to add:
+	go get coaching-app-backend
+[ERROR] Backend build failed!
+
+pls fix it.

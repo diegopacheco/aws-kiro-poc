@@ -19,6 +19,10 @@ export interface Feedback {
   target_id: number;
   content: string;
   created_at: string;
+  // Legacy properties for backward compatibility
+  recipientType?: 'team' | 'member';
+  recipientId?: number;
+  timestamp?: Date;
 }
 
 export interface AppState {

@@ -1,26 +1,24 @@
 import { TeamMember, Team, Feedback, AppState } from '../types';
 
 export const mockTeamMember: TeamMember = {
-  id: 'member-1',
+  id: 1,
   name: 'John Doe',
   email: 'john@example.com',
-  picture: 'data:image/jpeg;base64,fake-image-data',
-  teamIds: ['team-1']
+  picture: 'data:image/jpeg;base64,fake-image-data'
 };
 
 export const mockTeam: Team = {
-  id: 'team-1',
+  id: 1,
   name: 'Development Team',
-  logo: 'data:image/jpeg;base64,fake-logo-data',
-  memberIds: ['member-1']
+  logo: 'data:image/jpeg;base64,fake-logo-data'
 };
 
 export const mockFeedback: Feedback = {
-  id: 'feedback-1',
-  recipientType: 'member',
-  recipientId: 'member-1',
+  id: 1,
+  target_type: 'member',
+  target_id: 1,
   content: 'Great work on the project!',
-  timestamp: new Date('2024-01-01T10:00:00Z')
+  created_at: '2024-01-01T10:00:00Z'
 };
 
 export const mockAppState: AppState = {

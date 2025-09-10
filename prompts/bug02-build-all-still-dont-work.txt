@@ -1,0 +1,94 @@
+Bug 02: ./build-all.sh still has bugs and dont work - here is the output:
+
+❯ ./build-all.sh
+🚀 Starting unified build process...
+==================================
+[INFO] Checking prerequisites...
+[WARNING] Bun is not installed. Checking for npm...
+[WARNING] Using npm instead of bun for frontend build.
+[WARNING] Docker is not installed. Skipping Docker image builds.
+[SUCCESS] Prerequisites check completed.
+[INFO] Building Go backend...
+[INFO] Downloading Go dependencies...
+[INFO] Compiling Go application...
+database/database.go:9:2: missing go.sum entry for module providing package gorm.io/driver/mysql (imported by coaching-app-backend/database); to add:
+	go get coaching-app-backend/database
+database/database.go:10:2: missing go.sum entry for module providing package gorm.io/gorm (imported by coaching-app-backend/database); to add:
+	go get coaching-app-backend/database
+handlers/assignment_handler.go:8:2: missing go.sum entry for module providing package github.com/gin-gonic/gin (imported by coaching-app-backend); to add:
+	go get coaching-app-backend
+[ERROR] Backend build failed!
+❯ ./build-all.sh
+🚀 Starting unified build process...
+==================================
+[INFO] Checking prerequisites...
+[WARNING] Bun is not installed. Checking for npm...
+[WARNING] Using npm instead of bun for frontend build.
+[WARNING] Docker is not installed. Skipping Docker image builds.
+[SUCCESS] Prerequisites check completed.
+[INFO] Building Go backend...
+[INFO] Tidying Go modules...
+go: downloading github.com/go-sql-driver/mysql v1.7.0
+go: downloading github.com/mattn/go-sqlite3 v1.14.17
+go: downloading github.com/jinzhu/now v1.1.5
+go: downloading github.com/jinzhu/inflection v1.0.0
+go: downloading github.com/gin-contrib/sse v0.1.0
+go: downloading github.com/mattn/go-isatty v0.0.19
+go: downloading github.com/stretchr/testify v1.8.3
+go: downloading google.golang.org/protobuf v1.30.0
+go: downloading golang.org/x/net v0.10.0
+go: downloading github.com/bytedance/sonic v1.9.1
+go: downloading github.com/goccy/go-json v0.10.2
+go: downloading github.com/json-iterator/go v1.1.12
+go: downloading github.com/go-playground/validator/v10 v10.14.0
+go: downloading github.com/pelletier/go-toml/v2 v2.0.8
+go: downloading github.com/ugorji/go/codec v1.2.11
+go: downloading gopkg.in/yaml.v3 v3.0.1
+go: downloading golang.org/x/sys v0.8.0
+go: downloading github.com/pmezard/go-difflib v1.0.0
+go: downloading github.com/davecgh/go-spew v1.1.1
+go: downloading github.com/modern-go/reflect2 v1.0.2
+go: downloading github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
+go: downloading golang.org/x/arch v0.3.0
+go: downloading github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311
+go: downloading github.com/twitchyliquid64/golang-asm v0.15.1
+go: downloading github.com/klauspost/cpuid/v2 v2.2.4
+go: downloading golang.org/x/text v0.9.0
+go: downloading github.com/leodido/go-urn v1.2.4
+go: downloading golang.org/x/crypto v0.9.0
+go: downloading github.com/gabriel-vasile/mimetype v1.4.2
+go: downloading github.com/go-playground/locales v0.14.1
+go: downloading github.com/go-playground/universal-translator v0.18.1
+go: downloading github.com/go-playground/assert/v2 v2.2.0
+go: downloading gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405
+go: downloading github.com/google/go-cmp v0.5.5
+go: downloading golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
+[INFO] Downloading Go dependencies...
+[INFO] Compiling Go application...
+[SUCCESS] Backend build completed successfully!
+[INFO] Building React frontend...
+[INFO] Installing npm dependencies...
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+
+added 400 packages, and audited 401 packages in 14s
+
+110 packages are looking for funding
+  run `npm fund` for details
+
+5 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+[SUCCESS] Dependencies installed successfully!
+[INFO] Building React application with npm...
+
+> coaching-app-frontend@1.0.0 build
+> bun build src/index.tsx --outdir ./dist --target browser
+
+sh: bun: command not found
+[ERROR] Frontend build failed!
+
+fix it.

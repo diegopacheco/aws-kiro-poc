@@ -102,7 +102,7 @@ class ApiService {
     });
   }
 
-  async getTeamMembers(): Promise<TeamMember[]> {
+  async getAllTeamMembers(): Promise<TeamMember[]> {
     return this.request<TeamMember[]>('/team-members');
   }
 

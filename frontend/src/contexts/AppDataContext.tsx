@@ -34,7 +34,7 @@ export const AppDataProvider: React.FC<AppDataProviderProps> = ({ children }) =>
 
   const refreshTeamMembers = async () => {
     try {
-      const teamMembers = await apiService.getTeamMembers();
+      const teamMembers = await apiService.getAllTeamMembers();
       setState(prev => ({ ...prev, teamMembers }));
     } catch (error) {
       console.error('Failed to fetch team members:', error);
