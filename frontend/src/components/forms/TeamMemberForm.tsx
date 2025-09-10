@@ -5,9 +5,10 @@ import { FormErrors } from '../../types';
 
 interface TeamMemberFormProps {
   onSubmit: (data: { name: string; email: string; picture?: string }) => void;
+  loading?: boolean;
 }
 
-export const TeamMemberForm: React.FC<TeamMemberFormProps> = ({ onSubmit }) => {
+export const TeamMemberForm: React.FC<TeamMemberFormProps> = ({ onSubmit, loading = false }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [picture, setPicture] = useState<string>('');
@@ -71,7 +72,9 @@ export const TeamMemberForm: React.FC<TeamMemberFormProps> = ({ onSubmit }) => {
           preview={picture}
         />
         
-        <Button type="submit">Add Team Member</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Adding...' : 'Add Team Member'}
+        </Button>
       </form>
     </Card>
   );

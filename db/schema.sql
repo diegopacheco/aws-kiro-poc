@@ -68,8 +68,4 @@ INSERT IGNORE INTO team_members (name, email, picture_url) VALUES
 INSERT IGNORE INTO team_assignments (team_id, team_member_id) VALUES 
 (1, 1), (1, 2), (2, 2), (2, 3);
 
--- Sample feedback
-INSERT IGNORE INTO feedback (content, target_type, target_id) VALUES 
-('Great work on the recent project!', 'team', 1),
-('Excellent attention to detail in the UI design.', 'member', 2),
-('The team collaboration has improved significantly.', 'team', 2);
+-- Sample feedback (removed to avoid confusion with mock data)

@@ -1,0 +1,7 @@
+Bug 10: Feedback is not on the DB. 
+
+You must look the page, backend code and even table/db.
+
+I see only mocks on the feedback table. My guess is the page is not calling the backend properly and is mockign stuff with session store or something.
+
+m/ake sure you read all code and fix this.

@@ -5,7 +5,7 @@ import { TeamMember, Team } from '../../types';
 interface AssignmentFormProps {
   teamMembers: TeamMember[];
   teams: Team[];
-  onAssign: (memberId: string, teamId: string) => void;
+  onAssign: (memberId: number, teamId: number) => void;
 }
 
 export const AssignmentForm: React.FC<AssignmentFormProps> = ({
@@ -20,7 +20,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
     e.preventDefault();
     
     if (selectedMemberId && selectedTeamId) {
-      onAssign(selectedMemberId, selectedTeamId);
+      onAssign(parseInt(selectedMemberId, 10), parseInt(selectedTeamId, 10));
       setSelectedMemberId('');
       setSelectedTeamId('');
     }
