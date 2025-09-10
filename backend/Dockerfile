@@ -30,7 +30,10 @@ RUN apk --no-cache add ca-certificates
 RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
 
-WORKDIR /root/
+# Create app directory and set proper ownership
+RUN mkdir -p /app && chown appuser:appgroup /app
+
+WORKDIR /app
 
 # Copy the binary from builder stage
 COPY --from=builder /app/main .
