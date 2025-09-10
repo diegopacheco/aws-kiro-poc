@@ -10,6 +10,7 @@ PROS
 * You can import all your plugins from vscode
 * It's fast
 * It kind of works-ish
+* It uses Sonnet v4 model
 
 
 CONS
