@@ -1,0 +1,5 @@
+Bug 08: frontend is very bad, here are the fixes I need:
+
+1. the app logo need to be on the top menu and in the left and much smaller.
+
+2. links shiuld be in a menu as well in the top - always visible.

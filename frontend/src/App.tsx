@@ -49,7 +49,7 @@ const AppContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      <main>
+      <main className="pt-4">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/add-member" element={<AddTeamMemberPage />} />
