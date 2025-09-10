@@ -1,0 +1,11 @@
+Bug 07: Frontend is broken, when I inspect with chrome dev tools I go this:
+
+http://localhost:3000
+
+api.ts:56 Uncaught ReferenceError: process is not defined
+    at new ApiService (api.ts:56:20)
+    at api.ts:175:27
+
+This seemes to be preventing the page to render(which is blank).
+
+Please fix it.

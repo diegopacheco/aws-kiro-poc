@@ -16,6 +16,8 @@ import './styles/globals.css';
 
 const AppContent: React.FC = () => {
   const { loading, error, refreshData } = useAppData();
+  
+  console.log('AppContent render:', { loading, error });
 
   if (loading) {
     return (

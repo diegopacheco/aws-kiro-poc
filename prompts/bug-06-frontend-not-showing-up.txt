@@ -1,0 +1,21 @@
+Bug 06: App seems to be runnings:
+
+❯ docker ps
+CONTAINER ID  IMAGE                                           COMMAND               CREATED         STATUS                    PORTS                              NAMES
+9b03abc3beb0  docker.io/moby/buildkit:buildx-stable-1                               18 minutes ago  Up 18 minutes                                                buildx_buildkit_default
+7b7cbf701a2f  docker.io/library/mysql:9.0                     mysqld                6 minutes ago   Up 6 minutes (healthy)    0.0.0.0:3306->3306/tcp, 33060/tcp  coaching-app-db
+9a2b06a2cf4b  docker.io/library/aws-kiro-poc-backend:latest   ./main                6 minutes ago   Up 6 minutes (healthy)    0.0.0.0:8080->8080/tcp             coaching-app-backend
+812f6d356b9d  docker.io/library/aws-kiro-poc-frontend:latest  bun run dev --hos...  6 minutes ago   Up 6 minutes (unhealthy)  0.0.0.0:3000->3000/tcp             coaching-app-frontend
+❯ curl -s -I http://localhost:3000 | head -1
+HTTP/1.1 200 OK
+❯ curl -s -I http://localhost:3000
+HTTP/1.1 200 OK
+Vary: Origin
+Content-Type: text/html
+Cache-Control: no-cache
+ETag: W/"21a-MD4cRQ7hAi3drBd9FBY9Kex0RUo"
+Date: Wed, 10 Sep 2025 06:22:47 GMT
+Content-Length: 0
+
+
+but I dont see anything on the UI - looks like there is a bug on the frontend?
