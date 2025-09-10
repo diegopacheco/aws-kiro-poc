@@ -2,6 +2,61 @@
 
 A full-stack coaching application built with React frontend, Go backend, and MySQL database, all containerized with Docker.
 
+## Trade-off Analysis | Kiro POC Experience
+
+PROS
+* they have specs with requirements, design and tasks.
+* I'ts a fork for VSCODE 
+* You can import all your plugins from vscode
+* It's fast
+* It kind of works-ish
+
+
+CONS
+* VS Code import was anoying I had to agree to 92 plugins, and I had 131, IDK why he missed the others but is a bug in KIRO for sure.
+* It produced a lot of bugs, much more than all other agents
+* It shock a couple of time and could not get the commands running. I had to kill the terminals to guarantee it would not be sutck. Sometimes I had to tell kiro he was stuck. Clearly this is a bug in KIRO.
+* The resulting UI is very bad, very ugly and barely works.
+* It took me 4h and I could not get to the point I really wanted.
+* Kiro VSCode crashed 1 time.
+* 
+
+## Results
+
+Kiro Import of VS Code <BR/>
+<img src="results/kiro-import-configs-vscode.png" width="600" /> <BR/>
+
+Kiro In Action <BR/>
+<img src="results/kiro-in-action.png" width="600" /> <BR/>
+
+Kiro In Action <BR/>
+<img src="results/kiro-in-action-2.png" width="600" /> <BR/>
+
+Kiro In Action <BR/>
+<img src="results/kiro-in-avtion-3.png" width="600"  /> <BR/>
+
+Kiro In Action <BR/>
+<img src="results/kiro-in-ation-4.png" width="600" /> <BR/>
+
+Result APP 1 <BR/>
+<img src="results/app-result-1.png" width="600" /> <BR/>
+
+Result APP 3 <BR/>
+<img src="results/app-result-3.png" width="600" /> <BR/>
+
+Result APP 4 <BR/>
+<img src="results/app-result-4.png" width="600" /> <BR/>
+
+Result APP 5 <BR/>
+<img src="results/app-result-5.png" width="600" /> <BR/>
+
+Result APP 6 <BR/>
+<img src="results/app-result-6.png" width="600" /> <BR/>
+
+Result APP 7 <BR/>
+<img src="results/app-result-7.png" width="600" /> <BR/>
+
+
 ## Quick Start
 
 ### Prerequisites
