@@ -7,16 +7,18 @@ import { FormErrors } from '../../types';
 interface FeedbackFormProps {
   teamMembers: TeamMember[];
   teams: Team[];
-  onSubmit: (data: { recipientType: 'team' | 'member'; recipientId: string; content: string }) => void;
+  onSubmit: (data: { target_type: 'team' | 'member'; target_id: number; content: string }) => void;
+  loading?: boolean;
 }
 
 export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   teamMembers,
   teams,
-  onSubmit
+  onSubmit,
+  loading = false
 }) => {
-  const [recipientType, setRecipientType] = useState<'team' | 'member'>('member');
-  const [recipientId, setRecipientId] = useState('');
+  const [targetType, setTargetType] = useState<'team' | 'member'>('member');
+  const [targetId, setTargetId] = useState('');
   const [content, setContent] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -26,18 +28,18 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
     const validation = validateFeedback(content);
     setErrors(validation.errors);
 
-    if (validation.isValid && recipientId) {
+    if (validation.isValid && targetId) {
       onSubmit({
-        recipientType,
-        recipientId,
+        target_type: targetType,
+        target_id: parseInt(targetId, 10),
         content
       });
-      setRecipientId('');
+      setTargetId('');
       setContent('');
     }
   };
 
-  const recipients = recipientType === 'team' ? teams : teamMembers;
+  const recipients = targetType === 'team' ? teams : teamMembers;
 
   return (
     <Card title="Give Feedback">
@@ -51,10 +53,10 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
               <input
                 type="radio"
                 value="member"
-                checked={recipientType === 'member'}
+                checked={targetType === 'member'}
                 onChange={(e) => {
-                  setRecipientType(e.target.value as 'member');
-                  setRecipientId('');
+                  setTargetType(e.target.value as 'member');
+                  setTargetId('');
                 }}
                 className="mr-2"
               />
@@ -64,10 +66,10 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
               <input
                 type="radio"
                 value="team"
-                checked={recipientType === 'team'}
+                checked={targetType === 'team'}
                 onChange={(e) => {
-                  setRecipientType(e.target.value as 'team');
-                  setRecipientId('');
+                  setTargetType(e.target.value as 'team');
+                  setTargetId('');
                 }}
                 className="mr-2"
               />
@@ -78,19 +80,19 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Select {recipientType === 'team' ? 'Team' : 'Team Member'} <span className="text-red-500">*</span>
+            Select {targetType === 'team' ? 'Team' : 'Team Member'} <span className="text-red-500">*</span>
           </label>
           <select
-            value={recipientId}
-            onChange={(e) => setRecipientId(e.target.value)}
+            value={targetId}
+            onChange={(e) => setTargetId(e.target.value)}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">Choose a {recipientType === 'team' ? 'team' : 'team member'}...</option>
+            <option value="">Choose a {targetType === 'team' ? 'team' : 'team member'}...</option>
             {recipients.map((recipient) => (
               <option key={recipient.id} value={recipient.id}>
                 {recipient.name}
-                {recipientType === 'member' && ` (${(recipient as TeamMember).email})`}
+                {targetType === 'member' && ` (${(recipient as TeamMember).email})`}
               </option>
             ))}
           </select>
@@ -113,8 +115,8 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
           {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content}</p>}
         </div>
 
-        <Button type="submit" disabled={!recipientId || !content.trim()}>
-          Submit Feedback
+        <Button type="submit" disabled={loading || !targetId || !content.trim()}>
+          {loading ? 'Submitting...' : 'Submit Feedback'}
         </Button>
       </form>
     </Card>

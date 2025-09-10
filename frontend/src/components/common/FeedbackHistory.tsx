@@ -14,16 +14,17 @@ export const FeedbackHistory: React.FC<FeedbackHistoryProps> = ({
   teams
 }) => {
   const getRecipientName = (feedback: Feedback): string => {
-    if (feedback.recipientType === 'member') {
-      const member = teamMembers.find(m => m.id === feedback.recipientId);
+    if (feedback.target_type === 'member') {
+      const member = teamMembers.find(m => m.id === feedback.target_id);
       return member ? member.name : 'Unknown Member';
     } else {
-      const team = teams.find(t => t.id === feedback.recipientId);
+      const team = teams.find(t => t.id === feedback.target_id);
       return team ? team.name : 'Unknown Team';
     }
   };
 
-  const formatDate = (date: Date): string => {
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
@@ -42,10 +43,10 @@ export const FeedbackHistory: React.FC<FeedbackHistoryProps> = ({
           <div key={item.id} className="border-l-4 border-blue-500 pl-4 py-2">
             <div className="flex justify-between items-start mb-2">
               <h4 className="font-medium">
-                {getRecipientName(item)} ({item.recipientType})
+                {getRecipientName(item)} ({item.target_type})
               </h4>
               <span className="text-sm text-gray-500">
-                {formatDate(item.timestamp)}
+                {formatDate(item.created_at)}
               </span>
             </div>
             <p className="text-gray-700">{item.content}</p>

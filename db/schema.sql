@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS team_assignments (
 CREATE TABLE IF NOT EXISTS feedback (
     id INT PRIMARY KEY AUTO_INCREMENT,
     content TEXT NOT NULL,
-    target_type ENUM('team', 'team_member') NOT NULL,
+    target_type ENUM('team', 'member') NOT NULL,
     target_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -71,5 +71,5 @@ INSERT IGNORE INTO team_assignments (team_id, team_member_id) VALUES
 -- Sample feedback
 INSERT IGNORE INTO feedback (content, target_type, target_id) VALUES 
 ('Great work on the recent project!', 'team', 1),
-('Excellent attention to detail in the UI design.', 'team_member', 2),
+('Excellent attention to detail in the UI design.', 'member', 2),
 ('The team collaboration has improved significantly.', 'team', 2);
