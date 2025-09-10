@@ -1,50 +1,38 @@
-import { useState, useEffect } from 'react';
-import { TeamMember } from '../types';
-import { loadFromStorage, saveToStorage, generateId } from '../utils/storage';
+import { useState } from 'react';
+import { TeamMember, CreateTeamMemberRequest, ApiError } from '../types';
+import { apiService } from '../services/api';
+import { useAppData } from '../contexts/AppDataContext';
 
 export const useTeamMembers = () => {
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const { teamMembers, refreshTeamMembers: refreshData } = useAppData();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const data = loadFromStorage();
-    setTeamMembers(data.teamMembers);
-  }, []);
-
-  const addTeamMember = (memberData: Omit<TeamMember, 'id' | 'teamIds'>) => {
-    const newMember: TeamMember = {
-      ...memberData,
-      id: generateId(),
-      teamIds: []
-    };
-    
-    const updatedMembers = [...teamMembers, newMember];
-    setTeamMembers(updatedMembers);
-    
-    const currentData = loadFromStorage();
-    saveToStorage({
-      ...currentData,
-      teamMembers: updatedMembers
-    });
-    
-    return newMember;
+  const addTeamMember = async (memberData: CreateTeamMemberRequest): Promise<TeamMember | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const newMember = await apiService.createTeamMember(memberData);
+      await refreshData(); // Refresh global data
+      return newMember;
+    } catch (err) {
+      const apiError = err as ApiError;
+      setError(apiError.message || 'Failed to create team member');
+      return null;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateTeamMember = (id: string, updates: Partial<TeamMember>) => {
-    const updatedMembers = teamMembers.map(member =>
-      member.id === id ? { ...member, ...updates } : member
-    );
-    setTeamMembers(updatedMembers);
-    
-    const currentData = loadFromStorage();
-    saveToStorage({
-      ...currentData,
-      teamMembers: updatedMembers
-    });
+  const refreshTeamMembers = () => {
+    refreshData();
   };
 
   return {
     teamMembers,
+    loading,
+    error,
     addTeamMember,
-    updateTeamMember
+    refreshTeamMembers
   };
 };

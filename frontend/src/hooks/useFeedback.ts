@@ -1,43 +1,45 @@
-import { useState, useEffect } from 'react';
-import { Feedback } from '../types';
-import { loadFromStorage, saveToStorage, generateId } from '../utils/storage';
+import { useState } from 'react';
+import { Feedback, CreateFeedbackRequest, ApiError } from '../types';
+import { apiService } from '../services/api';
+import { useAppData } from '../contexts/AppDataContext';
 
 export const useFeedback = () => {
-  const [feedback, setFeedback] = useState<Feedback[]>([]);
+  const { feedback, refreshFeedback: refreshData } = useAppData();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const data = loadFromStorage();
-    setFeedback(data.feedback);
-  }, []);
-
-  const addFeedback = (feedbackData: Omit<Feedback, 'id' | 'timestamp'>) => {
-    const newFeedback: Feedback = {
-      ...feedbackData,
-      id: generateId(),
-      timestamp: new Date()
-    };
-    
-    const updatedFeedback = [...feedback, newFeedback];
-    setFeedback(updatedFeedback);
-    
-    const currentData = loadFromStorage();
-    saveToStorage({
-      ...currentData,
-      feedback: updatedFeedback
-    });
-    
-    return newFeedback;
+  const addFeedback = async (feedbackData: CreateFeedbackRequest): Promise<Feedback | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const newFeedback = await apiService.createFeedback(feedbackData);
+      await refreshData(); // Refresh global data
+      return newFeedback;
+    } catch (err) {
+      const apiError = err as ApiError;
+      setError(apiError.message || 'Failed to create feedback');
+      return null;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const getFeedbackByRecipient = (recipientType: 'team' | 'member', recipientId: string) => {
+  const getFeedbackByTarget = (targetType: 'team' | 'member', targetId: number) => {
     return feedback.filter(f => 
-      f.recipientType === recipientType && f.recipientId === recipientId
-    ).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+      f.target_type === targetType && f.target_id === targetId
+    ).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  };
+
+  const refreshFeedback = () => {
+    refreshData();
   };
 
   return {
     feedback,
+    loading,
+    error,
     addFeedback,
-    getFeedbackByRecipient
+    getFeedbackByTarget,
+    refreshFeedback
   };
 };

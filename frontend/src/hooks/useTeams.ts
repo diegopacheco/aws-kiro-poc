@@ -1,50 +1,72 @@
-import { useState, useEffect } from 'react';
-import { Team } from '../types';
-import { loadFromStorage, saveToStorage, generateId } from '../utils/storage';
+import { useState } from 'react';
+import { Team, CreateTeamRequest, ApiError } from '../types';
+import { apiService } from '../services/api';
+import { useAppData } from '../contexts/AppDataContext';
 
 export const useTeams = () => {
-  const [teams, setTeams] = useState<Team[]>([]);
+  const { teams, refreshTeams: refreshData } = useAppData();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const data = loadFromStorage();
-    setTeams(data.teams);
-  }, []);
-
-  const addTeam = (teamData: Omit<Team, 'id' | 'memberIds'>) => {
-    const newTeam: Team = {
-      ...teamData,
-      id: generateId(),
-      memberIds: []
-    };
-    
-    const updatedTeams = [...teams, newTeam];
-    setTeams(updatedTeams);
-    
-    const currentData = loadFromStorage();
-    saveToStorage({
-      ...currentData,
-      teams: updatedTeams
-    });
-    
-    return newTeam;
+  const addTeam = async (teamData: CreateTeamRequest): Promise<Team | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const newTeam = await apiService.createTeam(teamData);
+      await refreshData(); // Refresh global data
+      return newTeam;
+    } catch (err) {
+      const apiError = err as ApiError;
+      setError(apiError.message || 'Failed to create team');
+      return null;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateTeam = (id: string, updates: Partial<Team>) => {
-    const updatedTeams = teams.map(team =>
-      team.id === id ? { ...team, ...updates } : team
-    );
-    setTeams(updatedTeams);
-    
-    const currentData = loadFromStorage();
-    saveToStorage({
-      ...currentData,
-      teams: updatedTeams
-    });
+  const deleteTeam = async (teamId: number): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      await apiService.deleteTeam(teamId);
+      await refreshData(); // Refresh global data
+      return true;
+    } catch (err) {
+      const apiError = err as ApiError;
+      setError(apiError.message || 'Failed to delete team');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeMemberFromTeam = async (teamId: number, memberId: number): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      await apiService.removeMemberFromTeam(teamId, memberId);
+      await refreshData(); // Refresh global data
+      return true;
+    } catch (err) {
+      const apiError = err as ApiError;
+      setError(apiError.message || 'Failed to remove member from team');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refreshTeams = () => {
+    refreshData();
   };
 
   return {
     teams,
+    loading,
+    error,
     addTeam,
-    updateTeam
+    deleteTeam,
+    removeMemberFromTeam,
+    refreshTeams
   };
 };

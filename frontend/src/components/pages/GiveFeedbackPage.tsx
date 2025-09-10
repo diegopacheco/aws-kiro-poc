@@ -2,14 +2,21 @@ import React from 'react';
 import { FeedbackForm } from '../forms';
 import { FeedbackHistory } from '../common/FeedbackHistory';
 import { useTeamMembers, useTeams, useFeedback } from '../../hooks';
+import { useToast } from '../../contexts/ToastContext';
 
 export const GiveFeedbackPage: React.FC = () => {
   const { teamMembers } = useTeamMembers();
   const { teams } = useTeams();
-  const { feedback, addFeedback } = useFeedback();
+  const { feedback, addFeedback, loading } = useFeedback();
+  const { showToast } = useToast();
 
-  const handleSubmit = (data: { recipientType: 'team' | 'member'; recipientId: string; content: string }) => {
-    addFeedback(data);
+  const handleSubmit = async (data: { target_type: 'team' | 'member'; target_id: number; content: string }) => {
+    const result = await addFeedback(data);
+    if (result) {
+      showToast('Feedback submitted successfully!', 'success');
+    } else {
+      showToast('Failed to submit feedback', 'error');
+    }
   };
 
   return (
@@ -19,6 +26,7 @@ export const GiveFeedbackPage: React.FC = () => {
           teamMembers={teamMembers}
           teams={teams}
           onSubmit={handleSubmit}
+          loading={loading}
         />
         <FeedbackHistory
           feedback={feedback}

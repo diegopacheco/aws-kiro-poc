@@ -9,18 +9,27 @@ export const Navigation: React.FC = () => {
     { path: '/add-member', label: 'Add Member' },
     { path: '/create-team', label: 'Create Team' },
     { path: '/assign-team', label: 'Assign Team' },
-    { path: '/give-feedback', label: 'Give Feedback' }
+    { path: '/give-feedback', label: 'Give Feedback' },
+    { path: '/feedback-list', label: 'View Feedback' },
+    { path: '/team-management', label: 'Manage Teams' }
   ];
 
   return (
     <nav className="bg-white shadow-sm border-b">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="text-xl font-bold text-blue-600">
-            Coaching App
+          <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src="/logo-app.png" 
+              alt="Coaching App Logo" 
+              className="h-10 w-auto"
+            />
+            <span className="text-xl font-bold text-blue-600">
+              Coaching App
+            </span>
           </Link>
           
-          <div className="flex space-x-6">
+          <div className="flex space-x-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}

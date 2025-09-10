@@ -1,30 +1,60 @@
 export interface TeamMember {
-  id: string;
+  id: number;
   name: string;
   email: string;
   picture?: string;
-  teamIds: string[];
+  teams?: Team[];
 }
 
 export interface Team {
-  id: string;
+  id: number;
   name: string;
   logo?: string;
-  memberIds: string[];
+  members?: TeamMember[];
 }
 
 export interface Feedback {
-  id: string;
-  recipientType: 'team' | 'member';
-  recipientId: string;
+  id: number;
+  target_type: 'team' | 'member';
+  target_id: number;
   content: string;
-  timestamp: Date;
+  created_at: string;
 }
 
 export interface AppState {
   teamMembers: TeamMember[];
   teams: Team[];
   feedback: Feedback[];
+}
+
+// API Request types
+export interface CreateTeamMemberRequest {
+  name: string;
+  email: string;
+  picture?: string;
+}
+
+export interface CreateTeamRequest {
+  name: string;
+  logo?: string;
+}
+
+export interface CreateFeedbackRequest {
+  target_type: 'team' | 'member';
+  target_id: number;
+  content: string;
+}
+
+export interface AssignmentRequest {
+  team_id: number;
+  team_member_id: number;
+}
+
+// API Error type
+export interface ApiError {
+  message: string;
+  status: number;
+  details?: any;
 }
 
 export interface FormErrors {

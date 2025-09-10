@@ -1,27 +1,27 @@
 import React from 'react';
 import { AssignmentForm } from '../forms';
-import { useTeamMembers, useTeams } from '../../hooks';
+import { useTeamMembers, useTeams, useAssignments } from '../../hooks';
+import { useToast } from '../../contexts/ToastContext';
 
 export const AssignToTeamPage: React.FC = () => {
-  const { teamMembers, updateTeamMember } = useTeamMembers();
-  const { teams, updateTeam } = useTeams();
+  const { teamMembers, refreshTeamMembers } = useTeamMembers();
+  const { teams, refreshTeams } = useTeams();
+  const { assignMemberToTeam, loading } = useAssignments();
+  const { showToast } = useToast();
 
-  const handleAssign = (memberId: string, teamId: string) => {
-    const member = teamMembers.find(m => m.id === memberId);
-    const team = teams.find(t => t.id === teamId);
+  const handleAssign = async (memberId: number, teamId: number) => {
+    const result = await assignMemberToTeam({
+      team_member_id: memberId,
+      team_id: teamId
+    });
     
-    if (member && team) {
-      if (!member.teamIds.includes(teamId)) {
-        updateTeamMember(memberId, {
-          teamIds: [...member.teamIds, teamId]
-        });
-      }
-      
-      if (!team.memberIds.includes(memberId)) {
-        updateTeam(teamId, {
-          memberIds: [...team.memberIds, memberId]
-        });
-      }
+    if (result) {
+      showToast('Member assigned to team successfully!', 'success');
+      // Refresh data to show updated assignments
+      refreshTeamMembers();
+      refreshTeams();
+    } else {
+      showToast('Failed to assign member to team', 'error');
     }
   };
 
@@ -31,6 +31,7 @@ export const AssignToTeamPage: React.FC = () => {
         teamMembers={teamMembers}
         teams={teams}
         onAssign={handleAssign}
+        loading={loading}
       />
     </div>
   );

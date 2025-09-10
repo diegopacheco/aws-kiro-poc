@@ -32,3 +32,37 @@ func (s *TeamService) GetTeamByID(id uint) (*models.Team, error) {
 	}
 	return &team, nil
 }
+
+func (s *TeamService) GetTeamMembers(teamID uint) ([]models.TeamMember, error) {
+	var team models.Team
+	err := s.db.Preload("Members").First(&team, teamID).Error
+	if err != nil {
+		return nil, err
+	}
+	return team.Members, nil
+}
+
+func (s *TeamService) RemoveMemberFromTeam(teamID, memberID uint) error {
+	// Remove the association between team and member
+	var team models.Team
+	if err := s.db.First(&team, teamID).Error; err != nil {
+		return err
+	}
+
+	var member models.TeamMember
+	if err := s.db.First(&member, memberID).Error; err != nil {
+		return err
+	}
+
+	return s.db.Model(&team).Association("Members").Delete(&member)
+}
+
+func (s *TeamService) DeleteTeam(teamID uint) error {
+	// First remove all team assignments
+	if err := s.db.Where("team_id = ?", teamID).Delete(&models.TeamAssignment{}).Error; err != nil {
+		return err
+	}
+
+	// Then delete the team
+	return s.db.Delete(&models.Team{}, teamID).Error
+}
