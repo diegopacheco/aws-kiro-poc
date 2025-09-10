@@ -26,6 +26,14 @@ func main() {
 
 	r.Use(middleware.CORS())
 
+	// Health check endpoint
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status":  "healthy",
+			"service": "coaching-app-backend",
+		})
+	})
+
 	api := r.Group("/api")
 	{
 		handlers.SetupTeamMemberRoutes(api, db)

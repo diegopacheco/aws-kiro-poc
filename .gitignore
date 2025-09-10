@@ -137,3 +137,21 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+# Docker and Database
+db/mysql_data/
+.docker/
+docker-compose.override.yml
+
+# Go binaries and build artifacts
+backend/main
+backend/*.exe
+backend/tmp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
