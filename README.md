@@ -19,7 +19,7 @@ CONS
 * The resulting UI is very bad, very ugly and barely works.
 * It took me 4h and I could not get to the point I really wanted.
 * Kiro VSCode crashed 1 time.
-* 
+* Did not respect my AGENTS.md and the result code is full of comments.
 
 ## Results
 
